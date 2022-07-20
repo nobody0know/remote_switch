@@ -20,8 +20,13 @@ static inline uint32_t convert_servo_angle_to_duty_us(int angle)
 
 void servo_control_init(void)
 {
+    mcpwm_pin_config_t servo_pin_init = {
+        .mcpwm0a_out_num = 18,
+        .mcpwm0b_out_num = 19,
+    };
     mcpwm_gpio_init(MCPWM_UNIT_0, MCPWM0A, SERVO_PULSE_GPIO_LEFT); // To drive a RC servo, one MCPWM generator is enough
     mcpwm_gpio_init(MCPWM_UNIT_0, MCPWM0B, SERVO_PULSE_GPIO_RIGHT);
+    mcpwm_set_pin(MCPWM_UNIT_0,&servo_pin_init);
     mcpwm_config_t pwm_config = {
         .frequency = 50, // frequency = 50Hz, i.e. for every servo motor time period should be 20ms
         .cmpr_a = 0,     // duty cycle of PWMxA = 0
@@ -73,6 +78,23 @@ void servo_control_left(uint8_t mode)
         ESP_ERROR_CHECK(mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, example_convert_servo_angle_to_duty_us(-60)));//平齐
         vTaskDelay(pdMS_TO_TICKS(100));
         break;
+    case all_on:
+        printf("all on");
+        ESP_ERROR_CHECK(mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, example_convert_servo_angle_to_duty_us(30)));//左后打下去
+        ESP_ERROR_CHECK(mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, example_convert_servo_angle_to_duty_us(-160)));//左后打下去
+        vTaskDelay(pdMS_TO_TICKS(100));
+        ESP_ERROR_CHECK(mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, example_convert_servo_angle_to_duty_us(-60)));//平齐
+        ESP_ERROR_CHECK(mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, example_convert_servo_angle_to_duty_us(-60)));//平齐
+        vTaskDelay(pdMS_TO_TICKS(100));
+        break;
+    case all_off:
+        printf("all off");
+        ESP_ERROR_CHECK(mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, example_convert_servo_angle_to_duty_us(-160)));//左后打下去
+        ESP_ERROR_CHECK(mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, example_convert_servo_angle_to_duty_us(30)));//左后打下去
+        vTaskDelay(pdMS_TO_TICKS(100));
+        ESP_ERROR_CHECK(mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, example_convert_servo_angle_to_duty_us(-60)));//平齐
+        ESP_ERROR_CHECK(mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, example_convert_servo_angle_to_duty_us(-60)));//平齐
+        vTaskDelay(pdMS_TO_TICKS(100));
     default:
         break;
     }

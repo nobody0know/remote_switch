@@ -66,11 +66,11 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
         break;
     case MQTT_EVENT_SUBSCRIBED:
         ESP_LOGI(TAG, "MQTT_EVENT_SUBSCRIBED, msg_id=%d", event->msg_id);
-        msg_id[0] = esp_mqtt_client_publish(client, "lightleft0", "data", 0, 2, 0);
+        msg_id[0] = esp_mqtt_client_publish(client, "lightleft0", "data", 0, 2, 0);//左边灯开关
         ESP_LOGI(TAG, "sent publish successful, msg_id=%d", msg_id);
-        msg_id[1] = esp_mqtt_client_publish(client, "lightright1", "data", 0, 2, 0);
+        msg_id[1] = esp_mqtt_client_publish(client, "lightright1", "data", 0, 2, 0);//右边灯开关
         ESP_LOGI(TAG, "sent publish successful, msg_id=%d", msg_id);
-        msg_id[2] = esp_mqtt_client_publish(client, "lightall2", "data", 0, 2, 0);
+        msg_id[2] = esp_mqtt_client_publish(client, "lightall2", "data", 0, 2, 0);//全部的开关
         ESP_LOGI(TAG, "sent publish successful, msg_id=%d", msg_id);
         break;
     case MQTT_EVENT_UNSUBSCRIBED:
