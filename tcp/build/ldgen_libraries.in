@@ -28,7 +28,7 @@ $<TARGET_FILE:__idf_log>
 $<TARGET_FILE:__idf_heap>
 $<TARGET_FILE:__idf_soc>
 $<TARGET_FILE:__idf_esp_hw_support>
-$<TARGET_FILE:__idf_riscv>
+$<TARGET_FILE:__idf_xtensa>
 $<TARGET_FILE:__idf_esp_common>
 $<TARGET_FILE:__idf_esp_timer>
 $<TARGET_FILE:__idf_freertos>
@@ -65,7 +65,9 @@ $<TARGET_FILE:__idf_json>
 $<TARGET_FILE:__idf_libsodium>
 $<TARGET_FILE:__idf_mqtt>
 $<TARGET_FILE:__idf_openssl>
+$<TARGET_FILE:__idf_perfmon>
 $<TARGET_FILE:__idf_spiffs>
+$<TARGET_FILE:__idf_ulp>
 $<TARGET_FILE:__idf_wifi_provisioning>
 $<TARGET_FILE:__idf_main>
 $<TARGET_FILE:__idf_protocol_examples_common>

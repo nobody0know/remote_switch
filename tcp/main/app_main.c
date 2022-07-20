@@ -33,6 +33,7 @@
 #include "can.h"
 #include "pid.h"
 #include "mqtt.h"
+#include "pwm.h"
 
 #define GPIO_INPUT_PIN_SEL 1ULL<<13
 
@@ -54,6 +55,7 @@ void app_main(void)
     ESP_ERROR_CHECK(nvs_flash_init());
     ESP_ERROR_CHECK(esp_netif_init());
     ESP_ERROR_CHECK(esp_event_loop_create_default());
+    servo_control_init();
 
     /* This helper function configures Wi-Fi or Ethernet, as selected in menuconfig.
      * Read "Establishing Wi-Fi or Ethernet Connection" section in

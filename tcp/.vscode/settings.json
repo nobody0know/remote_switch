@@ -2,12 +2,14 @@
   "C_Cpp.intelliSenseEngine": "Tag Parser",
   "files.associations": {
     "mqtt_client.h": "c",
-    "mcpwm.h": "c"
+    "mcpwm.h": "c",
+    "esp_log.h": "c"
   },
-  "idf.adapterTargetName": "esp32c3",
+  "idf.adapterTargetName": "esp32",
   "idf.openOcdConfigs": [
-    "board/esp32c3-builtin.cfg"
+    "interface/ftdi/esp32_devkitj_v1.cfg",
+    "target/esp32.cfg"
   ],
   "idf.flashType": "UART",
-  "idf.portWin": "COM26"
+  "idf.portWin": "COM6"
 }

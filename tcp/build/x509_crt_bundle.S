@@ -1,4 +1,4 @@
-/* * Data converted from D:/tcp2/tcp/build/esp-idf/mbedtls/x509_crt_bundle
+/* * Data converted from D:/2022.2.11/remote_switch/tcp/build/esp-idf/mbedtls/x509_crt_bundle
  */
 .data
 .section .rodata.embedded

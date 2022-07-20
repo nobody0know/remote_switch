@@ -1,4 +1,6 @@
 #include "driver/mcpwm.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
 // You can get these value from the datasheet of servo you use, in general pulse width varies between 1000 to 2000 mocrosecond
 #define SERVO_MIN_PULSEWIDTH_US (500) // Minimum pulse width in microsecond
 #define SERVO_MAX_PULSEWIDTH_US (2500) // Maximum pulse width in microsecond
@@ -46,55 +48,56 @@ mode
 31 全开
 32 全关
 */
-void servo_control_left(uint8_t mode)
+void servo_control(uint16_t mode)
 {
     switch (mode)
     {
     case left_turn_on:
-        printf("turn on the left switch")
-        ESP_ERROR_CHECK(mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, example_convert_servo_angle_to_duty_us(30)));//左后打下去
+        printf("turn on the left switch");
+        ESP_ERROR_CHECK(mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, convert_servo_angle_to_duty_us(30)));//左后打下去
         vTaskDelay(pdMS_TO_TICKS(100));
-        ESP_ERROR_CHECK(mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, example_convert_servo_angle_to_duty_us(-60)));//平齐
+        ESP_ERROR_CHECK(mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, convert_servo_angle_to_duty_us(-60)));//平齐
         vTaskDelay(pdMS_TO_TICKS(100));
         break;
     case left_turn_off:
-        printf("turn off the left switch")
-        ESP_ERROR_CHECK(mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, example_convert_servo_angle_to_duty_us(-160)));//左后打下去
+        printf("turn off the left switch");
+        ESP_ERROR_CHECK(mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, convert_servo_angle_to_duty_us(-160)));//左后打下去
         vTaskDelay(pdMS_TO_TICKS(100));
-        ESP_ERROR_CHECK(mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, example_convert_servo_angle_to_duty_us(-60)));//平齐
+        ESP_ERROR_CHECK(mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, convert_servo_angle_to_duty_us(-60)));//平齐
         vTaskDelay(pdMS_TO_TICKS(100));
         break;
     case right_turn_on:
-        printf("turn on the right switch")
-        ESP_ERROR_CHECK(mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, example_convert_servo_angle_to_duty_us(-160)));//左后打下去
+        printf("turn on the right switch");
+        ESP_ERROR_CHECK(mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, convert_servo_angle_to_duty_us(-160)));//左后打下去
         vTaskDelay(pdMS_TO_TICKS(100));
-        ESP_ERROR_CHECK(mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, example_convert_servo_angle_to_duty_us(-60)));//平齐
+        ESP_ERROR_CHECK(mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, convert_servo_angle_to_duty_us(-60)));//平齐
         vTaskDelay(pdMS_TO_TICKS(100));
         break;
     case right_turn_off:
-        printf("turn off the right switch")
-        ESP_ERROR_CHECK(mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, example_convert_servo_angle_to_duty_us(30)));//左后打下去
+        printf("turn off the right switch");
+        ESP_ERROR_CHECK(mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, convert_servo_angle_to_duty_us(30)));//左后打下去
         vTaskDelay(pdMS_TO_TICKS(100));
-        ESP_ERROR_CHECK(mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, example_convert_servo_angle_to_duty_us(-60)));//平齐
+        ESP_ERROR_CHECK(mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, convert_servo_angle_to_duty_us(-60)));//平齐
         vTaskDelay(pdMS_TO_TICKS(100));
         break;
     case all_on:
         printf("all on");
-        ESP_ERROR_CHECK(mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, example_convert_servo_angle_to_duty_us(30)));//左后打下去
-        ESP_ERROR_CHECK(mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, example_convert_servo_angle_to_duty_us(-160)));//左后打下去
+        ESP_ERROR_CHECK(mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, convert_servo_angle_to_duty_us(30)));//左后打下去
+        ESP_ERROR_CHECK(mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, convert_servo_angle_to_duty_us(-160)));//左后打下去
         vTaskDelay(pdMS_TO_TICKS(100));
-        ESP_ERROR_CHECK(mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, example_convert_servo_angle_to_duty_us(-60)));//平齐
-        ESP_ERROR_CHECK(mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, example_convert_servo_angle_to_duty_us(-60)));//平齐
+        ESP_ERROR_CHECK(mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, convert_servo_angle_to_duty_us(-60)));//平齐
+        ESP_ERROR_CHECK(mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, convert_servo_angle_to_duty_us(-60)));//平齐
         vTaskDelay(pdMS_TO_TICKS(100));
         break;
     case all_off:
         printf("all off");
-        ESP_ERROR_CHECK(mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, example_convert_servo_angle_to_duty_us(-160)));//左后打下去
-        ESP_ERROR_CHECK(mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, example_convert_servo_angle_to_duty_us(30)));//左后打下去
+        ESP_ERROR_CHECK(mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, convert_servo_angle_to_duty_us(-160)));//左后打下去
+        ESP_ERROR_CHECK(mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, convert_servo_angle_to_duty_us(30)));//左后打下去
         vTaskDelay(pdMS_TO_TICKS(100));
-        ESP_ERROR_CHECK(mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, example_convert_servo_angle_to_duty_us(-60)));//平齐
-        ESP_ERROR_CHECK(mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, example_convert_servo_angle_to_duty_us(-60)));//平齐
+        ESP_ERROR_CHECK(mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, convert_servo_angle_to_duty_us(-60)));//平齐
+        ESP_ERROR_CHECK(mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, convert_servo_angle_to_duty_us(-60)));//平齐
         vTaskDelay(pdMS_TO_TICKS(100));
+        break;
     default:
         break;
     }

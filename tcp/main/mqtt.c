@@ -24,13 +24,35 @@
 
 #include "can.h"
 #include "pid.h"
-int16_t digit_massage=0;
+#include "pwm.h"
+int16_t message_flag=0;
+int8_t topic_num=0;
+char switch_data[10];
 static const char *TAG = "ESP32";
 static void log_error_if_nonzero(const char *message, int error_code)
 {
     if (error_code != 0) {
         ESP_LOGE(TAG, "Last error %s: 0x%x", message, error_code);
     }
+}
+int my_strcmp(const char* str1, const char* str2)
+{
+	int ret = 0;
+	while(!(ret=*(unsigned char*)str1-*(unsigned char*)str2) && *str1)
+	{
+		str1++;
+		str2++;
+	}
+
+	if (ret < 0)
+	{
+		return 0;
+	}
+	else if (ret > 0)
+	{
+		return 0;
+	}
+	return 1;
 }
 
 
@@ -55,11 +77,11 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
     case MQTT_EVENT_CONNECTED:
         ESP_LOGI(TAG, "MQTT_EVENT_CONNECTED");
         msg_id[0] = esp_mqtt_client_subscribe(client, "lightleft0", 2);
-        ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id);
+        ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id[0]);
         msg_id[1] = esp_mqtt_client_subscribe(client, "lightright1", 2);
-        ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id);
+        ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id[1]);
         msg_id[2] = esp_mqtt_client_subscribe(client, "lightall2", 2);
-        ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id);
+        ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id[2]);
         break;
     case MQTT_EVENT_DISCONNECTED:
         ESP_LOGI(TAG, "MQTT_EVENT_DISCONNECTED");
@@ -67,11 +89,11 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
     case MQTT_EVENT_SUBSCRIBED:
         ESP_LOGI(TAG, "MQTT_EVENT_SUBSCRIBED, msg_id=%d", event->msg_id);
         msg_id[0] = esp_mqtt_client_publish(client, "lightleft0", "data", 0, 2, 0);//左边灯开关
-        ESP_LOGI(TAG, "sent publish successful, msg_id=%d", msg_id);
+        ESP_LOGI(TAG, "sent publish successful, msg_id=%d", msg_id[0]);
         msg_id[1] = esp_mqtt_client_publish(client, "lightright1", "data", 0, 2, 0);//右边灯开关
-        ESP_LOGI(TAG, "sent publish successful, msg_id=%d", msg_id);
+        ESP_LOGI(TAG, "sent publish successful, msg_id=%d", msg_id[1]);
         msg_id[2] = esp_mqtt_client_publish(client, "lightall2", "data", 0, 2, 0);//全部的开关
-        ESP_LOGI(TAG, "sent publish successful, msg_id=%d", msg_id);
+        ESP_LOGI(TAG, "sent publish successful, msg_id=%d", msg_id[2]);
         break;
     case MQTT_EVENT_UNSUBSCRIBED:
         ESP_LOGI(TAG, "MQTT_EVENT_UNSUBSCRIBED, msg_id=%d", event->msg_id);
@@ -81,24 +103,18 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
         break;
     case MQTT_EVENT_DATA:
         ESP_LOGI(TAG, "MQTT_EVENT_DATA");
-        digit_massage = atoi(event->topic);
-       if(strcmp(event->topic,"lightleft0")) 
-        {
-            printf("TOPIC=%.*s\r\n", event->topic_len, event->topic);
-            printf("DATA=%.*s\r\n", event->data_len, event->data);
-        }
-        else if(strcmp(event->topic,"lightright1"))
-        {
-            printf("TOPIC=%.*s\r\n", event->topic_len, event->topic);
-            printf("DATA=%.*s\r\n", event->data_len, event->data);
-        }
-        else if(strcmp(event->topic,"lightall2"))
-        {
-            printf("TOPIC=%.*s\r\n", event->topic_len, event->topic);
-            printf("DATA=%.*s\r\n", event->data_len, event->data);
-        }
+        message_flag = 0;
+        printf("TOPIC=%.*s\r\n", event->topic_len, event->topic);
+        //printf("DATA=%.*s\r\n", event->data_len, event->data);
+        char switch_topic = *(event->topic+(event->topic_len-1));
+        printf("topic = %c\n",switch_topic);
         
-        
+        for (int i = 0; i < event->data_len; i++)
+        {
+            switch_data[i] = *event->data++;
+        }
+        printf("DATA=%s\r\n",switch_data);
+            
         break;
     case MQTT_EVENT_ERROR:
         ESP_LOGI(TAG, "MQTT_EVENT_ERROR");
