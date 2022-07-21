@@ -105,16 +105,37 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
         ESP_LOGI(TAG, "MQTT_EVENT_DATA");
         message_flag = 0;
         printf("TOPIC=%.*s\r\n", event->topic_len, event->topic);
-        //printf("DATA=%.*s\r\n", event->data_len, event->data);
         char switch_topic = *(event->topic+(event->topic_len-1));
         printf("topic = %c\n",switch_topic);
-        
         for (int i = 0; i < event->data_len; i++)
         {
             switch_data[i] = *event->data++;
         }
         printf("DATA=%s\r\n",switch_data);
-            
+        switch (switch_topic)
+        {
+        case '0':
+            if(my_strcmp(switch_data,"ON"))
+            servo_control(11);
+            else if(my_strcmp(switch_data,"OFF"))
+            servo_control(12);
+            break;
+        case '1':
+            if(my_strcmp(switch_data,"ON"))
+            servo_control(21);
+            else if(my_strcmp(switch_data,"OFF"))
+            servo_control(22);
+            break;
+        case '2':
+            if(my_strcmp(switch_data,"ON"))
+            servo_control(31);
+            else if(my_strcmp(switch_data,"OFF"))
+            servo_control(32);
+            break;
+        default:
+            break;
+        }
+        memset(switch_data,'\0',sizeof(switch_data)); 
         break;
     case MQTT_EVENT_ERROR:
         ESP_LOGI(TAG, "MQTT_EVENT_ERROR");
