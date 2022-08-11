@@ -21,6 +21,7 @@
 #include "esp_log.h"
 #include "mqtt_client.h"
 #include "mqtt.h"
+#include "ota_updata.h"
 
 #include "can.h"
 #include "pid.h"
@@ -89,7 +90,7 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
         break;
     case MQTT_EVENT_SUBSCRIBED:
         ESP_LOGI(TAG, "MQTT_EVENT_SUBSCRIBED, msg_id=%d", event->msg_id);
-        msg_id[0] = esp_mqtt_client_publish(client, "lightleft002", "data", 0, 2, 0);//左边灯开关
+        msg_id[0] = esp_mqtt_client_publish(client, "lightleft002", "start", 0, 2, 0);//左边灯开关
         ESP_LOGI(TAG, "sent publish successful, msg_id=%d", msg_id[0]);
         msg_id[1] = esp_mqtt_client_publish(client, "lightright002", "data", 0, 2, 0);//右边灯开关
         ESP_LOGI(TAG, "sent publish successful, msg_id=%d", msg_id[1]);
@@ -136,6 +137,8 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
             servo_control(31);
             else if(my_strcmp(switch_data,"OFF"))
             servo_control(32);
+            else if(my_strcmp(switch_data,"updata"))
+            ota_start_updata();
         }
         memset(switch_data,'\0',sizeof(switch_data)); 
         memset(switch_topic,'\0',sizeof(switch_topic)); 
