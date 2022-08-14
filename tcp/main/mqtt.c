@@ -78,11 +78,11 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
     switch ((esp_mqtt_event_id_t)event_id) {
     case MQTT_EVENT_CONNECTED:
         ESP_LOGI(TAG, "MQTT_EVENT_CONNECTED");
-        msg_id[0] = esp_mqtt_client_subscribe(client, "lightleft002", 2);
+        msg_id[0] = esp_mqtt_client_subscribe(client, "lightleft002", 2);//lightleft002为巴法云中mqtt控制台中对应主题的名字，lightleft可换，002不可，002是巴法云小程序识别为灯的特征码
         ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id[0]);
-        msg_id[1] = esp_mqtt_client_subscribe(client, "lightright002", 2);
+        msg_id[1] = esp_mqtt_client_subscribe(client, "lightright002", 2);//同理
         ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id[1]);
-        msg_id[2] = esp_mqtt_client_subscribe(client, "lightall002", 2);
+        msg_id[2] = esp_mqtt_client_subscribe(client, "lightall002", 2);//同理
         ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id[2]);
         break;
     case MQTT_EVENT_DISCONNECTED:
@@ -137,7 +137,7 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
             servo_control(31);
             else if(my_strcmp(switch_data,"OFF"))
             servo_control(32);
-            else if(my_strcmp(switch_data,"updata"))
+            else if(my_strcmp(switch_data,"updata"))//对lightall002这个主题发送updata即可启动ota升级，记得将SDK配置里的版本升一级然后把bulid里的bin文件上传服务器
             ota_start_updata();
         }
         memset(switch_data,'\0',sizeof(switch_data)); 
@@ -163,7 +163,7 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
     esp_mqtt_client_config_t mqtt_cfg = {
         .host = "bemfa.com",
         .port = 9501,
-        .client_id = "4ea6ab40f4f64f0b80fcddf9c92453f7",
+        .client_id = "xxxxxxxxxxxxxx",//你的巴法云控制台上的私钥
     };
 
     esp_mqtt_client_handle_t client = esp_mqtt_client_init(&mqtt_cfg);

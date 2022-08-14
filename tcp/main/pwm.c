@@ -7,7 +7,7 @@
 #define SERVO_MAX_DEGREE        (180)   // Maximum angle in degree upto which servo can rotate
 
 #define SERVO_PULSE_GPIO_LEFT        (18)   // GPIO connects to the PWM signal line
-#define SERVO_PULSE_GPIO_RIGHT       (19)
+#define SERVO_PULSE_GPIO_RIGHT       (19)   //两个舵机使用的引脚口
 
 #define left_turn_on 11
 #define left_turn_off 12
