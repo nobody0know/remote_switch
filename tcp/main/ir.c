@@ -440,8 +440,8 @@ void IR_init()
     {
         ESP_LOGI(TAG, "use default code lib");
         //没有编号，使用默认编号
-        band = band_gree;
-        pro_code = code_3;
+        band = band_meidi;
+        pro_code = code_4;
 
         if (ac_set_code_lib(band, pro_code) != ESP_OK) //保存到nvs
         {

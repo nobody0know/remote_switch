@@ -148,7 +148,6 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
         }
         else if(my_strcmp(switch_topic,"airconditioner001"))
         {
-            
             if(my_strcmp(switch_data,"on"))
             acctr_error_code = ac_status_config(true,26,0);//开机，26摄氏度，自动风
             else if(my_strcmp(switch_data,"off"))
