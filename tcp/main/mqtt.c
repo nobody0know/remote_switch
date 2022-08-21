@@ -26,8 +26,10 @@
 #include "can.h"
 #include "pid.h"
 #include "pwm.h"
+#include "ir.h"
 int16_t message_flag=0;
 int8_t topic_num=0;
+int acctr_error_code;
 char switch_data[10];
 char switch_topic[20];
 static const char *TAG = "ESP32";
@@ -74,7 +76,7 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
     ESP_LOGD(TAG, "Event dispatched from event loop base=%s, event_id=%d", base, event_id);
     esp_mqtt_event_handle_t event = event_data;
     esp_mqtt_client_handle_t client = event->client;
-    int msg_id[3];
+    int msg_id[4];
     switch ((esp_mqtt_event_id_t)event_id) {
     case MQTT_EVENT_CONNECTED:
         ESP_LOGI(TAG, "MQTT_EVENT_CONNECTED");
@@ -84,6 +86,8 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
         ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id[1]);
         msg_id[2] = esp_mqtt_client_subscribe(client, "lightall002", 2);//同理
         ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id[2]);
+        msg_id[3] = esp_mqtt_client_subscribe(client, "airconditioner001", 2);//同理
+        ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id[3]);
         break;
     case MQTT_EVENT_DISCONNECTED:
         ESP_LOGI(TAG, "MQTT_EVENT_DISCONNECTED");
@@ -95,6 +99,8 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
         msg_id[1] = esp_mqtt_client_publish(client, "lightright002", "data", 0, 2, 0);//右边灯开关
         ESP_LOGI(TAG, "sent publish successful, msg_id=%d", msg_id[1]);
         msg_id[2] = esp_mqtt_client_publish(client, "lightall002", "data", 0, 2, 0);//全部的开关
+        ESP_LOGI(TAG, "sent publish successful, msg_id=%d", msg_id[2]);
+        msg_id[2] = esp_mqtt_client_publish(client, "airconditioner001", "data", 0, 2, 0);//全部的开关
         ESP_LOGI(TAG, "sent publish successful, msg_id=%d", msg_id[2]);
         break;
     case MQTT_EVENT_UNSUBSCRIBED:
@@ -140,6 +146,15 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
             else if(my_strcmp(switch_data,"updata"))//对lightall002这个主题发送updata即可启动ota升级，记得将SDK配置里的版本升一级然后把bulid里的bin文件上传服务器
             ota_start_updata();
         }
+        else if(my_strcmp(switch_topic,"airconditioner001"))
+        {
+            
+            if(my_strcmp(switch_data,"ON"))
+            acctr_error_code = ac_status_config(true,26,0);//开机，26摄氏度，自动风
+            else if(my_strcmp(switch_data,"OFF"))
+            acctr_error_code = ac_status_config(false,26,0);//关机
+            printf("ac_control error code:%d\n",acctr_error_code);
+        }
         memset(switch_data,'\0',sizeof(switch_data)); 
         memset(switch_topic,'\0',sizeof(switch_topic)); 
         break;
@@ -163,7 +178,7 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
     esp_mqtt_client_config_t mqtt_cfg = {
         .host = "bemfa.com",
         .port = 9501,
-        .client_id = "xxxxxxxxxxxxxx",//你的巴法云控制台上的私钥
+        .client_id = "4ea6ab40f4f64f0b80fcddf9c92453f7",//你的巴法云控制台上的私钥
     };
 
     esp_mqtt_client_handle_t client = esp_mqtt_client_init(&mqtt_cfg);

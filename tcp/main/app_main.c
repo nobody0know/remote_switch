@@ -34,7 +34,8 @@
 #include "pid.h"
 #include "mqtt.h"
 #include "pwm.h"
-
+#include "ir.h"
+#include "storage.h"
 #define GPIO_INPUT_PIN_SEL 1ULL<<13
 
 static const char *TAG = "ESP32";
@@ -53,20 +54,12 @@ void app_main(void)
     esp_log_level_set("OUTBOX", ESP_LOG_VERBOSE);
 
     // Initialize NVS.
-    esp_err_t err = nvs_flash_init();
-    if (err == ESP_ERR_NVS_NO_FREE_PAGES || err == ESP_ERR_NVS_NEW_VERSION_FOUND) {
-        // OTA app partition table has a smaller NVS partition size than the non-OTA
-        // partition table. This size mismatch may cause NVS initialization to fail.
-        // If this happens, we erase NVS partition and initialize NVS again.
-        ESP_ERROR_CHECK(nvs_flash_erase());
-        err = nvs_flash_init();
-    }
-    ESP_ERROR_CHECK( err );
+    storage_init();
 
     ESP_ERROR_CHECK(esp_netif_init());
     ESP_ERROR_CHECK(esp_event_loop_create_default());
     servo_control_init();
-
+    IR_init();
     /* This helper function configures Wi-Fi or Ethernet, as selected in menuconfig.
      * Read "Establishing Wi-Fi or Ethernet Connection" section in
      * examples/protocols/README.md for more information about this function.

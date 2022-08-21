@@ -3,7 +3,8 @@
   "files.associations": {
     "mqtt_client.h": "c",
     "mcpwm.h": "c",
-    "esp_log.h": "c"
+    "esp_log.h": "c",
+    "storage.h": "c"
   },
   "idf.adapterTargetName": "esp32",
   "idf.openOcdConfigs": [
@@ -11,5 +12,5 @@
     "target/esp32.cfg"
   ],
   "idf.flashType": "UART",
-  "idf.portWin": "COM6"
+  "idf.portWin": "COM3"
 }
