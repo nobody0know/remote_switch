@@ -125,23 +125,23 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
         printf("DATA=%s\r\n",switch_data);
         if(my_strcmp(switch_topic,"lightleft002"))
         {
-            if(my_strcmp(switch_data,"ON"))
+            if(my_strcmp(switch_data,"on"))
             servo_control(11);
-            else if(my_strcmp(switch_data,"OFF"))
+            else if(my_strcmp(switch_data,"off"))
             servo_control(12);           
         }
         else if(my_strcmp(switch_topic,"lightright002"))
         {
-            if(my_strcmp(switch_data,"ON"))
+            if(my_strcmp(switch_data,"on"))
             servo_control(21);
-            else if(my_strcmp(switch_data,"OFF"))
+            else if(my_strcmp(switch_data,"off"))
             servo_control(22);
         }
         else if(my_strcmp(switch_topic,"lightall002"))
         {
-            if(my_strcmp(switch_data,"ON"))
+            if(my_strcmp(switch_data,"on"))
             servo_control(31);
-            else if(my_strcmp(switch_data,"OFF"))
+            else if(my_strcmp(switch_data,"off"))
             servo_control(32);
             else if(my_strcmp(switch_data,"updata"))//对lightall002这个主题发送updata即可启动ota升级，记得将SDK配置里的版本升一级然后把bulid里的bin文件上传服务器
             ota_start_updata();
@@ -149,11 +149,11 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
         else if(my_strcmp(switch_topic,"airconditioner001"))
         {
             
-            if(my_strcmp(switch_data,"ON"))
+            if(my_strcmp(switch_data,"on"))
             acctr_error_code = ac_status_config(true,26,0);//开机，26摄氏度，自动风
-            else if(my_strcmp(switch_data,"OFF"))
+            else if(my_strcmp(switch_data,"off"))
             acctr_error_code = ac_status_config(false,26,0);//关机
-            printf("ac_control error code:%d\n",acctr_error_code);
+            //printf("ac_control error code:%d\n",acctr_error_code);
         }
         memset(switch_data,'\0',sizeof(switch_data)); 
         memset(switch_topic,'\0',sizeof(switch_topic)); 
