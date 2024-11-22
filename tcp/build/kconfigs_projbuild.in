@@ -1,7 +1,0 @@
-source "C:/Users/lc201/esp/esp-idf/components/app_update/Kconfig.projbuild"
-source "C:/Users/lc201/esp/esp-idf/components/bootloader/Kconfig.projbuild"
-source "C:/Users/lc201/esp/esp-idf/components/esp_rom/Kconfig.projbuild"
-source "C:/Users/lc201/esp/esp-idf/components/esptool_py/Kconfig.projbuild"
-source "C:/Users/lc201/esp/esp-idf/components/partition_table/Kconfig.projbuild"
-source "D:/2022.2.11/remote_switch/tcp/main/Kconfig.projbuild"
-source "C:/Users/lc201/esp/esp-idf/examples/common_components/protocol_examples_common/Kconfig.projbuild"

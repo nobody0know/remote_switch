@@ -30,8 +30,6 @@
 #include "esp_log.h"
 #include "mqtt_client.h"
 
-#include "can.h"
-#include "pid.h"
 #include "mqtt.h"
 #include "pwm.h"
 #include "ir.h"
@@ -42,7 +40,7 @@ static const char *TAG = "ESP32";
 void app_main(void)
 {
     ESP_LOGI(TAG, "[APP] Startup..");
-    ESP_LOGI(TAG, "[APP] Free memory: %d bytes", esp_get_free_heap_size());
+    ESP_LOGI(TAG, "[APP] Free memory: %ld bytes", esp_get_free_heap_size());
     ESP_LOGI(TAG, "[APP] IDF version: %s", esp_get_idf_version());
 
     esp_log_level_set("*", ESP_LOG_INFO);
@@ -71,8 +69,6 @@ void app_main(void)
      */
     esp_wifi_set_ps(WIFI_PS_NONE);
 #endif // CONFIG_EXAMPLE_CONNECT_WIFI
-    //pid_param_init(&moto_pid,16000,1000,10,8000,0,10.0f,0.2f,0.0f);
-    //moto_pid.target=0;
     mqtt_app_start();
     while (1)
     {

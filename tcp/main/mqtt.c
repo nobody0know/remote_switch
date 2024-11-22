@@ -21,10 +21,7 @@
 #include "esp_log.h"
 #include "mqtt_client.h"
 #include "mqtt.h"
-#include "ota_updata.h"
 
-#include "can.h"
-#include "pid.h"
 #include "pwm.h"
 #include "ir.h"
 int16_t message_flag=0;
@@ -73,7 +70,7 @@ int my_strcmp(const char* str1, const char* str2)
  */
 static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, void *event_data)
 {
-    ESP_LOGD(TAG, "Event dispatched from event loop base=%s, event_id=%d", base, event_id);
+    ESP_LOGD(TAG, "Event dispatched from event loop base=%s, event_id=%ld", base, event_id);
     esp_mqtt_event_handle_t event = event_data;
     esp_mqtt_client_handle_t client = event->client;
     int msg_id[4];
@@ -143,8 +140,8 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
             servo_control(31);
             else if(my_strcmp(switch_data,"off"))
             servo_control(32);
-            else if(my_strcmp(switch_data,"updata"))//对lightall002这个主题发送updata即可启动ota升级，记得将SDK配置里的版本升一级然后把bulid里的bin文件上传服务器
-            ota_start_updata();
+            // else if(my_strcmp(switch_data,"updata"))//对lightall002这个主题发送updata即可启动ota升级，记得将SDK配置里的版本升一级然后把bulid里的bin文件上传服务器
+            // ota_start_updata();OTA有问题,当时也没有验证过，后面估计是版本更新了，例程改的也过不了最新版IDF的编译了
         }
         else if(my_strcmp(switch_topic,"airconditioner001"))
         {
@@ -174,13 +171,14 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
 
  void mqtt_app_start(void)
 {
-    esp_mqtt_client_config_t mqtt_cfg = {
-        .host = "bemfa.com",
-        .port = 9501,
-        .client_id = "4ea6ab40f4f64f0b80fcddf9c92453f7",//你的巴法云控制台上的私钥
-    };
+    
+    esp_mqtt_client_config_t mqtt_usercfg;
 
-    esp_mqtt_client_handle_t client = esp_mqtt_client_init(&mqtt_cfg);
+    mqtt_usercfg.broker.address.hostname = "bemfa.com";
+    mqtt_usercfg.broker.address.port = 9501;
+    mqtt_usercfg.credentials.client_id = "xxxxxxxx";//巴法云控制台私钥
+
+    esp_mqtt_client_handle_t client = esp_mqtt_client_init(&mqtt_usercfg);
     /* The last argument may be used to pass data to the event handler, in this example mqtt_event_handler */
     esp_mqtt_client_register_event(client, ESP_EVENT_ANY_ID, mqtt_event_handler, NULL);
     esp_mqtt_client_start(client);
